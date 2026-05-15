@@ -1,15 +1,17 @@
 'use client';
 
+import type { Route } from 'next';
 import Link from 'next/link';
 import { Bot, LayoutDashboard, MessageSquare, Settings } from 'lucide-react';
+import type { ComponentType } from 'react';
 import { cn } from '@/lib/utils/cn';
 import { useUIStore } from '@/store/ui-store';
 
-const links = [
+const links: ReadonlyArray<{ href: Route; label: string; icon: ComponentType<{ className?: string }> }> = [
   { href: '/dashboard', label: 'Overview', icon: LayoutDashboard },
   { href: '/chat', label: 'Chat', icon: Bot },
-  { href: '#', label: 'History', icon: MessageSquare },
-  { href: '#', label: 'Settings', icon: Settings }
+  { href: '/dashboard', label: 'History', icon: MessageSquare },
+  { href: '/dashboard', label: 'Settings', icon: Settings }
 ];
 
 export function Sidebar() {
