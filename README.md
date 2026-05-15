@@ -1,6 +1,6 @@
 # AsianGPT SaaS Foundation
 
-Production-grade AI chatbot SaaS with smooth streaming UX, conversation management, and Sarvam 105B integration via Vercel AI SDK.
+Now includes a dynamic **Asian GPT personality engine** with roast-first comedic behavior and useful answers.
 
 ## Install
 
@@ -10,28 +10,27 @@ cp .env.example .env
 pnpm dev
 ```
 
-## Required Environment Variables
+## Personality Engine Architecture
 
-- `SARVAM_API_KEY`
-- `SARVAM_BASE_URL` (default: `https://api.sarvam.ai/v1`)
-- `SARVAM_MODEL` (default: `sarvam-105b`)
-- Supabase + app URL values from `.env.example`
+- `src/lib/personality/config.ts`: canonical behavior rules and intensity labels
+- `src/lib/personality/mood-engine.ts`: dynamic mood + intensity derivation from context
+- `src/lib/personality/templates.ts`: roast openers, reaction tags, recovery closers
+- `src/lib/ai/prompts/system-prompt.ts`: prompt templating + behavior constraints
+- `src/lib/ai/middleware/personality.ts`: personality injection middleware
+- `src/lib/ai/stream.ts`: streaming handler with mood-aware prompt pipeline
+- `src/app/api/chat/route.ts`: Edge stream + mood/intensity response headers
 
-## Architecture
+## Behavior Contract
 
-- `src/lib/ai/*`: provider abstraction + streaming handler
-- `src/app/api/chat/route.ts`: Edge streaming endpoint
-- `src/components/chat/*`: chat UX primitives (markdown, copy, edit, regenerate, typing)
-- `src/app/actions/chat.ts`: server actions for conversation management
-- `src/lib/chat/storage.ts`: persistence interface (currently in-memory; replace with DB)
+- Roast first, answer second
+- Dramatic/sarcastic/comedic timing with playful disappointment
+- Uses meme phrases like "Sharma ji son" and "EMOTIONAL DAMAGE" contextually
+- Occasional Hindi/Telugu slang for flavor
+- Strictly non-hateful and non-abusive
 
-## Features Implemented
+## Existing Chat Features
 
-- streaming responses (AI SDK)
-- animated messages + smooth autoscroll
+- streaming responses via Vercel AI SDK
 - markdown + syntax highlighting
-- copy buttons + user message editing
-- regenerate response button
-- conversation sidebar + switching + new chat
-- loading/skeleton states
-- toast notifications and error handling
+- copy buttons + edit message + regenerate
+- conversation switching + loading states + toasts

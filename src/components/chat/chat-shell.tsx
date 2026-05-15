@@ -15,6 +15,8 @@ export function ChatShell({ initialConversations }: { initialConversations: Conv
   const [conversationId, setConversationId] = useState<string | undefined>(initialConversations[0]?.id);
   const [editing, setEditing] = useState<{ id: string; content: string } | null>(null);
   const [pending, startTransition] = useTransition();
+  const [mood, setMood] = useState<string>('dramatic');
+  const [intensity, setIntensity] = useState<string>('2');
   const viewportRef = useRef<HTMLDivElement>(null);
 
   const active = useMemo(() => conversations.find((c) => c.id === conversationId), [conversations, conversationId]);
@@ -27,6 +29,8 @@ export function ChatShell({ initialConversations }: { initialConversations: Conv
     onResponse(response) {
       const newId = response.headers.get('x-conversation-id');
       if (newId && !conversationId) setConversationId(newId);
+      setMood(response.headers.get('x-asian-gpt-mood') ?? 'dramatic');
+      setIntensity(response.headers.get('x-asian-gpt-intensity') ?? '2');
     },
     onError() {
       toast.error('Failed to get response.');
@@ -50,10 +54,14 @@ export function ChatShell({ initialConversations }: { initialConversations: Conv
     <div className="flex h-[calc(100vh-2rem)] gap-4">
       <ConversationSidebar conversations={conversations} currentId={conversationId} onSelect={loadConversation} onNew={() => { setConversationId(undefined); setMessages([]); }} />
       <div className="flex flex-1 flex-col gap-3">
+        <div className="glass flex items-center justify-between rounded-xl px-4 py-2 text-xs text-zinc-300">
+          <span>Asian GPT mood: <strong className="text-cyan-300">{mood}</strong></span>
+          <span>Roast intensity: <strong className="text-violet-300">{intensity}/5</strong></span>
+        </div>
         <div ref={viewportRef} className="glass flex-1 space-y-3 overflow-y-auto rounded-2xl p-4">
           {pending && <div className="animate-pulse rounded-xl bg-white/5 p-4">Loading conversation...</div>}
           {messages.map((m) => <MessageBubble key={m.id} message={m} onEdit={(id, content) => setEditing({ id, content })} />)}
-          {isLoading && <div className="animate-pulse rounded-xl bg-white/5 p-4">AI is typing...</div>}
+          {isLoading && <div className="animate-pulse rounded-xl bg-white/5 p-4">EMOTIONAL DAMAGE... generating response...</div>}
         </div>
         {editing ? (
           <div className="glass rounded-2xl p-3">
