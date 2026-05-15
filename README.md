@@ -1,6 +1,6 @@
 # AsianGPT SaaS Foundation
 
-Now includes a dynamic **Asian GPT personality engine** with roast-first comedic behavior and useful answers.
+Now includes a production-grade **AI memory system** with Supabase + pgvector semantic retrieval.
 
 ## Install
 
@@ -10,27 +10,34 @@ cp .env.example .env
 pnpm dev
 ```
 
-## Personality Engine Architecture
+## Database Memory Layer (Supabase)
 
-- `src/lib/personality/config.ts`: canonical behavior rules and intensity labels
-- `src/lib/personality/mood-engine.ts`: dynamic mood + intensity derivation from context
-- `src/lib/personality/templates.ts`: roast openers, reaction tags, recovery closers
-- `src/lib/ai/prompts/system-prompt.ts`: prompt templating + behavior constraints
-- `src/lib/ai/middleware/personality.ts`: personality injection middleware
-- `src/lib/ai/stream.ts`: streaming handler with mood-aware prompt pipeline
-- `src/app/api/chat/route.ts`: Edge stream + mood/intensity response headers
+Run migration:
 
-## Behavior Contract
+```bash
+supabase db push
+```
 
-- Roast first, answer second
-- Dramatic/sarcastic/comedic timing with playful disappointment
-- Uses meme phrases like "Sharma ji son" and "EMOTIONAL DAMAGE" contextually
-- Occasional Hindi/Telugu slang for flavor
-- Strictly non-hateful and non-abusive
+Created schema in `supabase/migrations/20260515_memory_system.sql`:
 
-## Existing Chat Features
+- `users`
+- `conversations`
+- `messages`
+- `memories`
+- `embeddings` (pgvector)
+- `user_preferences`
+- `match_memories(...)` semantic retrieval function
 
-- streaming responses via Vercel AI SDK
-- markdown + syntax highlighting
-- copy buttons + edit message + regenerate
-- conversation switching + loading states + toasts
+## Memory Architecture
+
+- `src/lib/embeddings/provider.ts`: embedding generation pipeline
+- `src/lib/memory/repository.ts`: Supabase persistence + semantic RPC
+- `src/lib/memory/scoring.ts`: memory ranking and context compression
+- `src/lib/memory/extractor.ts`: memory candidate extraction (failures, habits, preferences, callbacks)
+- `src/lib/memory/service.ts`: retrieve + persist orchestration
+- `src/lib/ai/prompts/system-prompt.ts`: memory-aware prompt injection for continuity
+- `src/app/api/chat/route.ts`: memory retrieval before streaming + memory persistence after response
+
+## Behavioral Outcome
+
+Asian GPT now references prior user goals/failures/jokes with comedic continuity while still giving useful answers.

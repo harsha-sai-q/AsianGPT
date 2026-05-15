@@ -3,8 +3,8 @@ import { streamText } from 'ai';
 import { injectPersonality } from '@/lib/ai/middleware/personality';
 import { getChatModel } from './provider';
 
-export function createChatStream(messages: Message[]) {
-  const enriched = injectPersonality(messages);
+export function createChatStream(messages: Message[], memoryContext?: string) {
+  const enriched = injectPersonality(messages, memoryContext);
 
   const result = streamText({
     model: getChatModel(),
